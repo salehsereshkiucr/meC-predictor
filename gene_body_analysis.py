@@ -15,6 +15,7 @@ parser.add_argument('-g', '--genome_assembly_file', help='genome sequence file a
 parser.add_argument('-c', '--context', help='context', required=True)
 parser.add_argument('-a', '--annotation_file', help='annotation file address', required=True)
 parser.add_argument('-ct', '--coverage_threshold', help='minimum number of reads for including a cytosine in the training dataset', required=False, default=10, type=int)
+parser.add_argument('-bn', '--bin_number', help='number of bins for genebody and flanking regions', required=False, default=5, type=int)
 
 args = parser.parse_args()
 
@@ -32,7 +33,7 @@ if len(usls_chrs) > 0:
 meth_seq = data_reader.make_meth_string(organism_name, methylations, sequences, args.coverage_threshold, from_file=True)
 cntx_seq = data_reader.make_context_string(organism_name, methylations, sequences, from_file=True)
 
-genes_avg_p, genes_avg_n, flac_up_avg_p, flac_up_avg_n, flac_down_avg_p, flac_down_avg_n = gbm.get_gene_meth(meth_seq, genes_df,  5, threshold=0.5, context=args.context, context_seq=cntx_seq)
+genes_avg_p, genes_avg_n, flac_up_avg_p, flac_up_avg_n, flac_down_avg_p, flac_down_avg_n = gbm.get_gene_meth(meth_seq, genes_df,  args.bin_number, threshold=0.5, context=args.context, context_seq=cntx_seq)
 final_p = np.concatenate((flac_down_avg_p, genes_avg_p, flac_up_avg_p))
 final_n = np.concatenate((flac_down_avg_n, genes_avg_n, flac_up_avg_n))
 
