@@ -29,6 +29,6 @@ sequences_onehot = preprocess.convert_assembely_to_onehot(organism_name, sequenc
 
 
 if classifier == 'mrcnn':
-    mrcnn.run_experiment(methylations, sequences_onehot, num_to_chr_dic, data_size=args.train_size)
+    print('accuracy: ', mrcnn.run_experiment(methylations, sequences_onehot, num_to_chr_dic, data_size=args.train_size))
 elif classifier == 'cpgenie':
     cpgenie.run_experiments(methylations, sequences_onehot, num_to_chr_dic, args.train_size, memory_chunk_size=args.memory_chunk_size)

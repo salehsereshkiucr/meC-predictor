@@ -8,13 +8,13 @@ import numpy as np
 import pandas as pd
 
 
-import preprocess as preprocess
+import preprocess.preprocess as preprocess
 import profile_generator as pg
 import random
 from datetime import datetime
 import tensorflow as tf
 
-def test_sampler(methylations_test, sequences_onehot, annot_seqs_onehot, window_size, num_to_chr_dic, include_annot=False):
+def test_sampler(methylations_test, sequences_onehot, annot_seqs_onehot, window_size, num_to_chr_dic):
     methylated, unmethylated = preprocess.methylations_subseter(methylations_test, window_size)
     test_sample_size = int(min(50000, 2*len(methylated), 2*len(unmethylated)))
     test_sample_set = methylated[:test_sample_size]+unmethylated[:test_sample_size]
@@ -71,7 +71,7 @@ def run_experiments(methylations, sequences_onehot, num_to_chr_dic, data_size, m
         else:
             sample_set = methylated_train[chunk:chunk+memory_chunk_size]+unmethylated_train[chunk:chunk+memory_chunk_size]
         random.shuffle(sample_set)
-        profiles, targets = pg.get_profiles(methylations_train, sample_set, sequences_onehot, annot_seqs_onehot, num_to_chr_dic, window_size=1000)
+        profiles, targets = pg.get_profiles(methylations_train, sample_set, sequences_onehot, [], num_to_chr_dic, window_size=1000)
         X, Y = cpgenie_preprocess(profiles, targets)
         x_train, x_val, y_train, y_val = pg.split_data(X, Y, pcnt=0.1)
         x_train_sz += len(x_train)
@@ -83,7 +83,7 @@ def run_experiments(methylations, sequences_onehot, num_to_chr_dic, data_size, m
             del x_train, y_train
     model.save('./models/' + 'cpgenie_tested_model.mdl')
 
-    x_test, y_test = test_sampler(methylations_test, sequences_onehot, annot_seqs_onehot, 1000, num_to_chr_dic, include_annot=include_annot)
+    x_test, y_test = test_sampler(methylations_test, sequences_onehot, [], 1000, num_to_chr_dic)
     y_pred = model.predict(x_test)
     y_pred = np.argmax(y_pred, axis=1)
     y_test = np.argmax(y_test, axis=1)

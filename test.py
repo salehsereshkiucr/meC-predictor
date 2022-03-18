@@ -64,5 +64,5 @@ x_test, y_test = pg.data_preprocess(test_profiles, test_targets, include_annot=i
 
 y_pred = model.predict(x_test)
 
-np.savetxt('./output/' + organism_name+'_' + args.context + '.txt', y_pred.round().astype(int), delimiter=',', fmt='%d')
-print('results saved in ./output/' + organism_name+'_' + args.context + '.npy')
+np.savetxt('./output/' + organism_name+'_' + args.context + '.txt', y_pred.round().astype(int), delimiter=' ', fmt='%d')
+print('results saved in ./output/' + organism_name+'_' + args.context + '.txt')

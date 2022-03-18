@@ -3,7 +3,6 @@ import profile_generator as pg
 import pandas as pd
 import preprocess.preprocess as preprocess
 import random
-from sklearn.metrics import accuracy_score
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder

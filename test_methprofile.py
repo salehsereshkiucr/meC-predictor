@@ -27,5 +27,5 @@ X = X.reshape(list(X.shape) + [1])
 
 Y = model.predict(X)
 
-np.save('./output/' + args.organism_name+'_' + args.context + '_methprofile.npy', Y.round())
-print('results saved in ./output/'+ args.organism_name+'_' + args.context + '.npy')
+np.savetxt('./output/' + args.organism_name+'_' + args.context + '_methprofile.txt', Y.round().astype(int), delimiter=' ', fmt='%d')
+print('results saved in ./output/'+ args.organism_name+'_' + args.context + '.txt')
