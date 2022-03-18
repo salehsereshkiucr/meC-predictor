@@ -12,6 +12,9 @@ def get_profiles(methylations, sample_set, sequences_onehot, annot_seqs_onehot, 
     profiles = np.zeros([len(sample_set), window_size, 4 + 2*len(annot_seqs_onehot)], dtype='short')
     targets = np.zeros(len(sample_set), dtype='short')
     total = len(sample_set)
+    if total == 0:
+        print('sample length is zero')
+        exit()
     count = 0
     start = datetime.now()
     for index, position in enumerate(sample_set):

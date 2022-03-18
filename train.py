@@ -71,6 +71,7 @@ opt = tf.keras.optimizers.SGD(lr=0.01)
 model.compile(loss=keras.losses.binary_crossentropy, optimizer=opt, metrics=['accuracy'])
 methylated_train, unmethylated_train = preprocess.methylations_subseter(methylations, 3200)
 ds_size = min(len(methylated_train), len(unmethylated_train))
+print('ds_size', ds_size)
 x_train_sz = 0
 step = args.train_size
 if ds_size * 2 < step:
