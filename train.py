@@ -76,7 +76,7 @@ x_train_sz = 0
 step = args.train_size
 if ds_size * 2 < step:
     step = (ds_size * 2) - 2
-print('start fitting ...')
+print('start fitting ... ' + 'dataset size = ' + str(step))
 print(step, args.memory_chunk_size)
 gpu_available = tf.test.is_gpu_available()
 for chunk in range(0, int(step/2), args.memory_chunk_size):
@@ -84,6 +84,8 @@ for chunk in range(0, int(step/2), args.memory_chunk_size):
         sample_set = methylated_train[chunk:int(step/2)]+unmethylated_train[chunk:int(step/2)]
     else:
         sample_set = methylated_train[chunk:chunk+args.memory_chunk_size]+unmethylated_train[chunk:chunk+args.memory_chunk_size]
+    if len(sample_set) == 0:
+        continue
     random.shuffle(sample_set)
     profiles, targets = pg.get_profiles(methylations, sample_set, sequences_onehot, annot_seqs_onehot, num_to_chr_dic, window_size=3200)
     X, Y = pg.data_preprocess(profiles, targets, include_annot=include_annot)
@@ -95,6 +97,7 @@ for chunk in range(0, int(step/2), args.memory_chunk_size):
     else:
         model.fit(x_train, y_train, batch_size=32, epochs=45, verbose=0, validation_data=(x_val, y_val))
     del x_train, y_train
+print('trained with ' + str(x_train_sz) + ' entries')
 ia_tag = ''
 if include_annot:
     ia_tag = 'annot'
