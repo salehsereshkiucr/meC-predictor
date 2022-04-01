@@ -55,6 +55,7 @@ if not include_annot:
     del annot_seqs_onehot
     annot_seqs_onehot = []
 
+methylations['mlevel'] = methylations['mlevel'].fillna(0)
 test_profiles, test_targets = pg.get_profiles(methylations, range(len(methylations)), sequences_onehot, annot_seqs_onehot, num_to_chr_dic, window_size=args.window_size)
 x_test, y_test = pg.data_preprocess(test_profiles, test_targets, include_annot=include_annot)
 
