@@ -15,7 +15,7 @@ def get_profiles(methylations, sample_set, sequences_onehot, annot_seqs_onehot, 
     if total == 0:
         print('sample length is zero')
         exit()
-    count = 0
+    count = 1
     start = datetime.now()
     for index, position in enumerate(sample_set):
         row = methylations.iloc[position]
