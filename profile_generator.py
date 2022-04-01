@@ -26,6 +26,7 @@ def get_profiles(methylations, sample_set, sequences_onehot, annot_seqs_onehot, 
             profiles[index] = get_window_seqgene_df(sequences_onehot, annot_seqs_onehot, chro, center, window_size)
         except:
             boundary_cytosines += 1
+        print(count, total)
         if count % int(total/10) == 0:
             now = datetime.now()
             seconds = (now - start).seconds
