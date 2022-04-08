@@ -10,7 +10,7 @@ parser.add_argument('-te', '--y_true', help='address to true methylation status 
 parser.add_argument('-m', '--methylation_file', help='address to true methylation file address', required=False)
 
 args = parser.parse_args()
-if args.test == None and args.methylation_file == None:
+if args.y_true == None and args.methylation_file == None:
     print('Error; Provide test output')
     exit()
 pr = np.loadtxt(args.y_predicted)
