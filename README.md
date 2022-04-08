@@ -62,7 +62,7 @@ This module will train a model and save it in the ./models/ directory. The saved
 
 As a sample you can run:
 
-<code>python test.py -mdl ./models/sample_organismCG.mdl/ -m ./sample/sample_methylations.txt -g ./sample/sample_seq.fasta -a ./sample/sample_annotation.txt -c CG</code>
+<code>python test.py -mdl ./models/sample_organismCG.mdl/ -m ./sample/sample_methylations_test.txt -g ./sample/sample_seq.fasta -a ./sample/sample_annotation.txt -c CG</code>
 
 ### Methylation-profile based
 
