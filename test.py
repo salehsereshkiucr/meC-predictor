@@ -63,3 +63,15 @@ y_pred = model.predict(x_test)
 
 np.savetxt('./output/' + organism_name + '.txt', y_pred.round().astype(int), delimiter=' ', fmt='%d')
 print('results saved in ./output/' + organism_name + '.txt')
+
+
+
+
+
+
+
+
+
+
+
+
