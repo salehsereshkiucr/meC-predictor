@@ -13,13 +13,13 @@ args = parser.parse_args()
 if args.test == None and args.methylation_file == None:
     print('Error; Provide test output')
     exit()
-te = np.loadtxt(args.test)
+pr = np.loadtxt(args.y_predicted)
 
 if args.test == None:
     methylations = pd.read_table(args.methylation_file, header=None)
     methylations.columns = ['chr', 'position', 'strand', 'meth', 'unmeth', 'context', 'three']
-    pr = np.asarray((methylations['meth'] / (methylations['meth'] + methylations['unmeth'])).fillna(0)).round()
+    te = np.asarray((methylations['meth'] / (methylations['meth'] + methylations['unmeth'])).fillna(0)).round()
 else:
-    pr = np.loadtxt(args.predicted)
+    te = np.loadtxt(args.y_true)
 
 print(accuracy_score(te.round(), pr.round()))
