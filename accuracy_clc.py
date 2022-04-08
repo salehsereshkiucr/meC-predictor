@@ -15,7 +15,7 @@ if args.y_true == None and args.methylation_file == None:
     exit()
 pr = np.loadtxt(args.y_predicted)
 
-if args.test == None:
+if args.y_true == None:
     methylations = pd.read_table(args.methylation_file, header=None)
     methylations.columns = ['chr', 'position', 'strand', 'meth', 'unmeth', 'context', 'three']
     te = np.asarray((methylations['meth'] / (methylations['meth'] + methylations['unmeth'])).fillna(0)).round()
