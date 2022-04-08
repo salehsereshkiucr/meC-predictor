@@ -75,6 +75,10 @@ The <code> train_methprofile.py </code> traines a model for cytosine methylation
 5. <code> -ct, --coverage_threshold: minimum number of reads for including a cytosine in the training dataset</code>
 6. <code> -on, --organism_name: sample name, for saving the files</code>
 
+An example for running the <code>train_methprofile.py</code> on the sample data can be:
+
+<code>python train_methprofile.py -m ./sample/sample_methylations_train.txt -tr 1000 -c CG</code>
+
 The trained model will be saved on the ./models/ folder. Then by using the <code> test_methprofile.py </code> for a sample of cytosines the binary methylation status can be predicted. This modul's input is profile of a set of cytosines provided in a tab seperated file. Each row of the file should contain the methylation levels of the neighbouring cytosines. For example below is a cytosine profile with a window size of 20 centered on the unknown cytosine(methylation levels of 10 cytosines downstream and 10 cytosines upstream)
 
 <code>0.76190476, 0.67857143, 0.6875    , 0.94366197, 1.        , 0.88235294, 0.6875    , 0.91304348, 0.94444444,1.        , 0.92      , 0.8125    , 0.91666667, 0.81481481, 0.82758621, 0.60606061, 0.95833333, 1.        , 1.        , 0.92307692
