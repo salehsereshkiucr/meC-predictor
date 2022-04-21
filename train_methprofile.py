@@ -48,5 +48,11 @@ def run_experiment(organism_name, X, Y, window_size=20, val_percent=0.2):
 
 
 methylations, num_to_chr_dic = data_reader.get_methylations(args.methylation_file,  args.coverage_threshold, context=args.context)
-X, Y = mp.profiler(methylations, args.context, args.train_size, window_size=args.window_size)
+methylations.insert(0, 'idx', range(0, len(methylations)))
+if len(args.context) != 0:
+    sample_methylations = methylations[methylations['context'] == args.context]
+else:
+    sample_methylations = methylations
+X, Y = mp.profiler(methylations, sample_methylations, args.train_size, args.organism_name,  window_size=args.window_size)
 run_experiment(args.organism_name, X, Y, window_size=args.train_size, val_percent=0.1)
+
