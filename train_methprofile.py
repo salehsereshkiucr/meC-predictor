@@ -53,5 +53,5 @@ if len(args.context) != 0:
 else:
     sample_methylations = methylations
 X, Y = mp.profiler(methylations, sample_methylations, args.train_size, args.organism_name,  window_size=args.window_size)
-run_experiment(args.organism_name, X, Y, args.context, window_size=args.train_size, val_percent=0.1)
+run_experiment(args.organism_name, X, Y, args.context, window_size=args.window_size, val_percent=0.1)
 
