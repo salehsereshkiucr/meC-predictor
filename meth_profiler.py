@@ -41,7 +41,6 @@ def input_maker(methylations, sample_methylations, datasize, window_size, organi
         try:
             X[index] = np.concatenate((mlevels[p-half_w: p], mlevels[p+1: p+half_w+1]), axis=0)
             Y[index] = 0 if mlevels[p] < 0.5 else 1
-
         except ValueError:
             #print(index, p)
             count_errored += 1
@@ -49,7 +48,6 @@ def input_maker(methylations, sample_methylations, datasize, window_size, organi
     print(count_errored, ' profiles faced error')
     print('dataset balanceness', len(Y[Y > 0]), len(Y[Y==0]))
     return X, Y
-
 
 def profiler(methylations, sample_methylations, datasize, organism_name, window_size=20):
     half_w = int(window_size/2)

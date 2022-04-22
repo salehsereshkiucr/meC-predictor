@@ -28,7 +28,7 @@ args = parser.parse_args()
 
 
 
-def run_experiment(organism_name, X, Y, window_size=20, val_percent=0.2):
+def run_experiment(organism_name, X, Y, context, window_size=20, val_percent=0.2):
     x_train, x_val, y_train, y_val = train_test_split(X, Y, test_size=val_percent, random_state=None)
     model = Sequential()
     model.add(Dense(window_size, activation='relu', input_shape=((window_size,1))))
@@ -42,10 +42,9 @@ def run_experiment(organism_name, X, Y, window_size=20, val_percent=0.2):
     opt = SGD(lr=0.001)
     model.compile(loss=keras.losses.binary_crossentropy, optimizer=opt, metrics=['accuracy'])
     model.fit(x_train, y_train, batch_size=32, epochs=20, verbose=0, validation_data=(x_val, y_val))
-    model_tag = str(organism_name) + str(args.context) + '_methprofile' + '.mdl'
+    model_tag = str(organism_name) + str(context) + '_methprofile' + '.mdl'
     print('model_saved in ./models directory with name:' + model_tag)
     model.save('./models/' + model_tag)
-
 
 methylations, num_to_chr_dic = data_reader.get_methylations(args.methylation_file,  args.coverage_threshold, context=args.context)
 methylations.insert(0, 'idx', range(0, len(methylations)))
@@ -54,5 +53,5 @@ if len(args.context) != 0:
 else:
     sample_methylations = methylations
 X, Y = mp.profiler(methylations, sample_methylations, args.train_size, args.organism_name,  window_size=args.window_size)
-run_experiment(args.organism_name, X, Y, window_size=args.train_size, val_percent=0.1)
+run_experiment(args.organism_name, X, Y, args.context, window_size=args.train_size, val_percent=0.1)
 
