@@ -89,6 +89,10 @@ This can be a row in the cytosine profiles file. The inputs of the <code> test_m
 2. <code> -mdl, --model_address: trained model address, required</code>
 3. <code> -on, --organism_name: sample name, for saving the files</code>
 
+A sample code could be:
+
+<code> python test_methprofile.py -p sample/meth_test_x.csv -mdl ./models/sample_organismCG_methprofile.mdl </code>
+
 ### GeneBody methylation
 
 The analysis of methylation in the genebody and flanking regions is implemented in the <code> gene_body_analysis.py </code>. This module devides the falnking regions and gene body to a number of bins and then in the genome-wide calculates the average methylation in each bin. Module inputs:
