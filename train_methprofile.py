@@ -43,6 +43,7 @@ def run_experiment(organism_name, X, Y, context, window_size=20, val_percent=0.2
     model.compile(loss=keras.losses.binary_crossentropy, optimizer=opt, metrics=['accuracy'])
     model.fit(x_train, y_train, batch_size=32, epochs=20, verbose=0, validation_data=(x_val, y_val))
     model_tag = str(organism_name) + str(context) + '_methprofile' + '.mdl'
+    print(model.summary())
     print('model_saved in ./models directory with name:' + model_tag)
     model.save('./models/' + model_tag)
 

@@ -21,7 +21,7 @@ args = parser.parse_args()
 
 model = keras.models.load_model(args.model_address)
 
-X = pd.read_table(args.prfiles_address)
+X = pd.read_table(args.prfiles_address, sep=',')
 X = X.to_numpy()
 X = X.reshape(list(X.shape) + [1])
 
