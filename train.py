@@ -19,8 +19,10 @@ parser = argparse.ArgumentParser(description='AMPS')
 parser.add_argument('-m', '--methylation_file', help='methylation file address', required=True)
 parser.add_argument('-g', '--genome_assembly_file', help='genome sequence file address, must be in fasta format', required=True)
 parser.add_argument('-c', '--context', help='context', required=True)
-parser.add_argument('-a', '--annotation_file', help='annotation file address', required=False)
-parser.add_argument('-ia', '--include_annotation', help='does the predictor include the annotation in the input? True/False', required=False, default=False)
+parser.add_argument('-ga', '--gene_file', help='gene annotation file address', required=False)
+parser.add_argument('-ra', '--repeat_file', help='repeat annotation file address', required=False)
+parser.add_argument('-iga', '--include_gene', help='does the predictor include the gene annotation in the input? True/False', required=False, default=False)
+parser.add_argument('-ira', '--include_repeat', help='does the predictor include the repeat annotation in the input? True/False', required=False, default=False)
 parser.add_argument('-tr', '--train_size', help='training dataset size, number of inputs for training', required=False, default=500000, type=int)
 parser.add_argument('-ws', '--window_size', help='window size, number of including nucleutides in a window.', required=False, default=3200, type=int)
 parser.add_argument('-ct', '--coverage_threshold', help='minimum number of reads for including a cytosine in the training dataset', required=False, default=10, type=int)
@@ -30,9 +32,12 @@ parser.add_argument('-mcs', '--memory_chunk_size', help='number of inputs in eac
 
 args = parser.parse_args()
 
-include_annot = args.include_annotation == 'True'
-if include_annot and len(args.annotation_file) == 0:
-    print('Enter the annotation file address. The annotation file must be provided when the include annotation is True')
+include_gene = args.include_gene == 'True'
+include_repeat = args.include_repeat == 'True'
+if include_gene and len(args.gene_file) == 0:
+    print('Enter the gene annotation file address. The gene annotation file must be provided when the include gene annotation is True')
+if include_repeat and len(args.repeat_file) == 0:
+    print('Enter the repeat annotation file address. The repeat annotation file must be provided when the include repeat annotation is True')
 
 organism_name = args.organism_name
 sequences = data_reader.readfasta(args.genome_assembly_file)
@@ -40,8 +45,8 @@ print('genome sequence assembly is loaded...')
 methylations, num_to_chr_dic = data_reader.get_methylations(args.methylation_file,  args.coverage_threshold, context=args.context)
 print('methylation level is loaded for ' + args.context + ' context ...' + str(len(methylations)))
 annot_seqs_onehot = []
-if include_annot:
-    annot_df = data_reader.read_annot(args.annotation_file)
+if include_gene:
+    annot_df = data_reader.read_annot(args.gene_file)
     annot_tag = ''
     annot_types = preprocess.get_annot_types(annot_df)
     print('list of annotated functional elements:' + str(annot_types))
@@ -53,12 +58,22 @@ if include_annot:
         annot_str = preprocess.make_annotseq_dic(organism_name, at, annot_subset, sequences, from_file=False)
         annot_seqs_onehot.append(annot_str)
         annot_tag += at
+if include_repeat:
+    annot_df = data_reader.read_annot(args.repeat_file)
+    sequences = data_reader.readfasta(args.genome_assembly_file)
+    annot_str = preprocess.make_annotseq_dic(organism_name, 'repeat', annot_df, sequences, from_file=True, strand_spec=False)
+    annot_seqs_onehot.append(annot_str)
+
 sequences_onehot = preprocess.convert_assembely_to_onehot(organism_name, sequences, from_file=False)
-if not include_annot:
+if not include_gene:
     del annot_seqs_onehot
     annot_seqs_onehot = []
 PROFILE_ROWS = 3200
-PROFILE_COLS = 4 + 2*len(annot_seqs_onehot)
+PROFILE_COLS = 4
+if include_gene:
+    PROFILE_COLS = PROFILE_COLS + 2*len(annot_types)
+if include_repeat:
+    PROFILE_COLS = PROFILE_COLS + 1
 model = Sequential()
 model.add(Conv2D(16, kernel_size=(1, PROFILE_COLS), activation='relu', input_shape=(PROFILE_ROWS, PROFILE_COLS, 1)))
 model.add(Reshape((80, 40, 16), input_shape=(PROFILE_ROWS, 1, 16)))
@@ -88,7 +103,7 @@ for chunk in range(0, int(step/2), args.memory_chunk_size):
         continue
     random.shuffle(sample_set)
     profiles, targets = pg.get_profiles(methylations, sample_set, sequences_onehot, annot_seqs_onehot, num_to_chr_dic, window_size=3200)
-    X, Y = pg.data_preprocess(profiles, targets, include_annot=include_annot)
+    X, Y = pg.data_preprocess(profiles, targets, include_annot=include_gene | include_repeat)
     x_train, x_val, y_train, y_val = pg.split_data(X, Y, pcnt=0.1)
     x_train_sz += len(x_train)
     if gpu_available:
@@ -99,8 +114,10 @@ for chunk in range(0, int(step/2), args.memory_chunk_size):
     del x_train, y_train
 print('trained with ' + str(x_train_sz) + ' entries')
 ia_tag = ''
-if include_annot:
-    ia_tag = 'annot'
+if include_gene:
+    ia_tag += 'Annot'
+if include_repeat:
+    ia_tag += 'Repeat'
 model_tag = str(organism_name) + str(args.context) + ia_tag + '.mdl'
 print('model_saved in ./models directory with name:' + model_tag)
 model.save('./models/' + model_tag)
